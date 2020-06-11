@@ -4,3 +4,272 @@ from django.apps import AppConfig
 
 class AccountsConfig(AppConfig):
     name = 'accounts'
+    from django.apps import AppConfig
+
+
+class AccountsConfig(AppConfig):
+    name = 'accounts'
+    from django.db import models
+
+# Create your models here.
+from django.test import TestCase
+
+# Create your tests here.
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path('register/', views.SignUp.as_view(), name='register'),
+    from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views import generic
+
+
+class SignUp(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/register.html
+    from django.contrib import admin
+
+from .models import Task
+
+admin.site.register(Task)
+
+from django import forms
+
+from .models import Task
+
+class TaskForm(forms.ModelForm):
+
+    class Meta:
+        model = Task
+        fields = ('title', 'description')
+
+        from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = [
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='Task',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=255)),
+                ('description', models.TextField()),
+                ('done', models.CharField(choices=[('doing', 'Doing'), ('done', 'Done')], max_length=5)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+            ],
+        ),
+    ]
+
+    from django.conf import settings
+from django.db import migrations, models
+import django.db.models.deletion
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('tasks', '0001_initial'),
+    ]
+
+    operations = [
+        migrations.AddField(
+            model_name='task',
+            name='user',
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            preserve_default=False,
+        ),
+    ]
+
+    from django.db import models
+from django.contrib.auth import get_user_model
+
+class Task(models.Model):
+
+    STATUS = (
+        ('doing', 'Doing'),
+        ('done', 'Done'),
+    )
+
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    done = models.CharField(
+        max_length=5,
+        choices=STATUS,
+    )
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">To Do</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Tarefas</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="#">Usuários</a>
+                        </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/accounts/login">Entrar</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Sobre nós</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                            <a class="nav-link" href="/accounts/logout">Sair</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        {% block content %}
+        {% endblock %}
+        <footer>
+            <p>horaDeCodar ToDo</p>
+        </footer>
+    </div>
+    <script
+    src="https://code.jquery.com/jquery-3.4.0.min.js"
+    integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+    crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.http import HttpResponse
+from .forms import TaskForm
+from django.contrib import messages
+import datetime
+
+from .models import Task
+
+@login_required
+def taskList(request):
+
+    search = request.GET.get('search')
+    filter = request.GET.get('filter')
+    tasksDoneRecently = Task.objects.filter(done='done', updated_at__gt=datetime.datetime.now()-datetime.timedelta(days=30)).count()
+    tasksDone = Task.objects.filter(done='done', user=request.user).count()
+    tasksDoing = Task.objects.filter(done='doing', user=request.user).count()
+
+    if search:
+        tasks = Task.objects.filter(title__icontains=search, user=request.user)
+    elif filter:
+        tasks = Task.objects.filter(done=filter, user=request.user)
+    else:
+        tasks_list = Task.objects.all().order_by('-created_at').filter(user=request.user)
+
+        paginator = Paginator(tasks_list, 3)
+
+        page = request.GET.get('page')
+        tasks = paginator.get_page(page)
+
+    return render(request, 'tasks/list.html', 
+        {'tasks':tasks, 'tasksrecently': tasksDoneRecently, 'tasksdone': tasksDone, 'tasksdoing': tasksDoing })
+
+@login_required
+def taskView(request, id):
+    task = get_object_or_404(Task, pk=id)
+    return render(request, 'tasks/task.html', {'task': task})
+
+@login_required
+def newTask(request):
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.done = 'doing'
+            task.user = request.user
+            task.save()
+            return redirect('/')
+    else:
+        form = TaskForm()
+        return render(request, 'tasks/addtask.html', {'form': form})
+
+@login_required
+def editTask(request, id):
+    task = get_object_or_404(Task, pk=id)
+    form = TaskForm(instance=task)
+
+    if(request.method == 'POST'):
+        form = TaskForm(request.POST, instance=task)
+
+        if(form.is_valid()):
+            task.save()
+            return redirect('/')
+        else:
+            return render(reuquest, 'task/edittask.html', {'form': form, 'task': task})
+    else:
+        return render(request, 'tasks/edittask.html', {'form': form, 'task': task})
+
+@login_required
+def deleteTask(request, id):
+    task = get_object_or_404(Task, pk=id)
+    task.delete()
+
+    messages.info(request, 'Tarefa deletada com sucesso.')
+
+    return redirect('/')
+
+@login_required
+def changeStatus(request, id):
+    task = get_object_or_404(Task, pk=id)
+
+    if(task.done == 'doing'):
+        task.done = 'done'
+    else:
+        task.done = 'doing'
+
+    task.save()
+
+    return redirect('/')
+
+@login_required
+def helloWorld(request):
+    return HttpResponse('Hello World!')
+
+@login_required
+def yourName(request, name):
+    return render(request, 'tasks/yourname.html', {'name':name})
